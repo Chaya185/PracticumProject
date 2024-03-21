@@ -1,23 +1,21 @@
-from flask import render_template
-from flask import Flask
-import random
-
+from flask import render_template, Flask
+import requests
 
 app = Flask(__name__)
 
-def getRandomNumber():
-    # Generate a random integer between 0 and 100 (inclusive)
-    random_number = random.randint(0, 100)
-    print("Random number:", random_number)
-
-    # Generate a random float between 0 and 1
-    #random_float = random.random()
-    #print("Random float:", random_float)
-    random_number_str = str(random_number)
-    return random_number_str
-
+def getRandomWord():
+    # Make a GET request to the Random Word API
+    response = requests.get("https://random-word-api.herokuapp.com/word")
+    
+    # Parse JSON response
+    word = response.json()[0]
+    return word
 
 @app.route('/')
 def index():
-    user = {'username': 'Chayki'}
-    return render_template('index.html', title = 'Home', user = user, randomnumber= getRandomNumber())
+    user = {'username': 'Rivka & Chayki'}
+    random_word = getRandomWord()
+    return render_template('index.html', title='Home', user=user, random_word=random_word)
+
+if __name__ == '__main__':
+    app.run(debug=True)
